@@ -10,7 +10,13 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Middleware
-const whitelist = ['https://citf-back.coolify.teczos.cloud/', 'http://localhost', 'null', 'http://127.0.0.1:5500'];
+const whitelist = [
+  'https://citf-back.coolify.teczos.cloud',
+  'http://localhost', 
+  'null', 
+  'http://127.0.0.1:5500',
+  'https://citf-front.coolify.teczos.cloud' // Add your frontend domain here
+];
 const corsOptions = {
   origin: function (origin, callback) {
     // allow requests with no origin (like mobile apps or curl requests)
@@ -27,6 +33,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));
@@ -39,6 +50,11 @@ const db = new Pool({
   database: 'postgres',
   port: 2345,
 });
+
+// Test database connection
+db.query('SELECT NOW()')
+  .then(() => console.log('✅ Database connected successfully'))
+  .catch(err => console.error('❌ Database connection error:', err));
 
 // Helper: Query wrapper for PostgreSQL
 async function pgQuery(sql, params = []) {
