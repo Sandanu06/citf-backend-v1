@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Middleware
-const whitelist = ['https://citf.coolify.teczos.cloud', 'http://localhost', 'null', 'http://127.0.0.1:5500'];
+const whitelist = ['https://citf-back.coolify.teczos.cloud/', 'http://localhost', 'null', 'http://127.0.0.1:5500'];
 const corsOptions = {
   origin: function (origin, callback) {
     // allow requests with no origin (like mobile apps or curl requests)
