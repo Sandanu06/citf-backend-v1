@@ -7,10 +7,26 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware
-app.use(cors());
+const whitelist = ['https://citf.coolify.teczos.cloud', 'http://localhost', 'null', 'http://127.0.0.1:5500'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    // The 'null' origin is sent by browsers for local files.
+    if (origin === 'null' || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));
@@ -73,8 +89,8 @@ app.get('/api/projects', async (req, res) => {
         projectsMap.set(id, { id, title, description, images: [] });
       }
       if (image_url) {
-        const fullUrl = `${req.protocol}://${req.get('host')}${image_url}`;
-        projectsMap.get(id).images.push(fullUrl);
+        // Send relative path to the frontend
+        projectsMap.get(id).images.push(image_url);
       }
     });
     const projects = Array.from(projectsMap.values());
