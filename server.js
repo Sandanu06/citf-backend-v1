@@ -15,7 +15,7 @@ const whitelist = [
   'http://localhost', 
   'null', 
   'http://127.0.0.1:5500',
-  'https://citf-front.coolify.teczos.cloud' // Add your frontend domain here
+  'https://citf-front.coolify.teczos.cloud','https://citf.org.lk','https://sage-froyo-ad6f7d.netlify.app'
 ];
 const corsOptions = {
   origin: function (origin, callback) {
